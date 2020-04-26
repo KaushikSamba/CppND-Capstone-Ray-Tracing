@@ -1,7 +1,8 @@
-#include "geometry.h"
-#include "image.h"
+#include "image_options.h"
+#include "image_saver.h"
 #include "json_reader.h"
-
+#include "ray.h"
+#include "sphere.h"
 #include <iostream>
 #include <memory>
 #include <vector>
