@@ -4,9 +4,16 @@
 
 template <typename T>
 Sphere<T>::Sphere(T x, T y, T z, T radius) : center(x, y, z), radius(radius) {}
+
 template <typename T>
 Sphere<T>::Sphere(Vector3D<T> center, T radius)
     : center(center), radius(radius) {}
+
+template <typename T>
+Sphere<T>::Sphere(const nlohmann::json &j)
+    : center(j["center"]["x"].get<T>(), j["center"]["y"].get<T>(),
+             j["center"]["z"].get<T>()),
+      radius(j["radius"].get<T>()) {}
 
 template <typename T> void Sphere<T>::print() {
     std::cout << "Instantiated a sphere of radius " << radius << " at center ";

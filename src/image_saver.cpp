@@ -22,4 +22,5 @@ void ImageSaver::save(const std::unique_ptr<Vector3D<float>[]> &image) {
             _outstream << r << g << b;
         }
     }
+    std::cout << "Completed writing to file " << _options->filename << "\n"; 
 }

@@ -18,10 +18,6 @@ void get_world_coordinates(float &world_x, float &world_y, const int &x,
 
 void render_image(const std::shared_ptr<ImageOptions> options,
                   const std::vector<std::unique_ptr<Sphere<float>>> &&spheres) {
-    // Sphere<float> sphere(Vector3D<float>(5, 3, -10), 3);
-    // sphere.print();
-
-    // Vector3D<float> image[options.height][options.width];
     std::unique_ptr<Vector3D<float>[]> image =
         std::make_unique<Vector3D<float>[]>(options->height * options->width);
 
@@ -70,31 +66,39 @@ void render_image(const std::shared_ptr<ImageOptions> options,
     }
     std::cout << "Saving PPM image to file.\n";
     // Saving the PPM image
-    // save_image(options, image);
     ImageSaver saver(options);
-    std::cout << "Ref count: " << options.use_count() << "\n";
+    // std::cout << "Ref count: " << options.use_count() << "\n";
     saver.save(image);
 }
 
 std::shared_ptr<ImageOptions> getImageConfigs(std::string filename) {
     JSONReader reader(filename);
     nlohmann::json j = reader.getJSON();
-    std::shared_ptr<ImageOptions> options = std::make_shared<ImageOptions>(
-        j["dimensions"]["height"], j["dimensions"]["width"], j["angle"],
-        j["filename"]);
+    std::shared_ptr<ImageOptions> options = std::make_shared<ImageOptions>(j);
     return options;
+}
+
+std::vector<std::unique_ptr<Sphere<float>>> getObjects(std::string filename) {
+    JSONReader reader(filename);
+    nlohmann::json j = reader.getJSON();
+    std::vector<std::unique_ptr<Sphere<float>>> spheres;
+    int i = 0;
+    for (auto &object_json : j) {
+        if (object_json["type"].get<std::string>() == "sphere") {
+            spheres.emplace_back(std::make_unique<Sphere<float>>(object_json));
+            spheres[i++]->print();
+        }
+    }
+    return std::move(spheres);
 }
 
 int main() {
     std::shared_ptr<ImageOptions> options =
         getImageConfigs("../configs/image_options.json");
     ;
-    // ImageOptions options(201, 201, 90);
-    std::vector<std::unique_ptr<Sphere<float>>> spheres;
-    spheres.emplace_back(std::make_unique<Sphere<float>>(0, 0, -10, 3));
-    spheres[0]->print();
+    std::vector<std::unique_ptr<Sphere<float>>> spheres =
+        getObjects("../configs/objects.json");
     render_image(std::move(options), std::move(spheres));
-    std::cout << "Ref count: " << options.use_count() << "\n";
-    // std::cout << "Aspect ratio: " << options->getAspectRatio() << "\n";
+    // std::cout << "Ref count: " << options.use_count() << "\n";
     return 0;
 }

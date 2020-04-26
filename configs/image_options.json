@@ -4,5 +4,5 @@
         "width": 201,
         "height": 201
     },
-    "filename": "out.ppm"
+    "save_filename": "out.ppm"
 }

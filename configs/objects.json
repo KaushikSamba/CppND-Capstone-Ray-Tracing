@@ -1,0 +1,20 @@
+[
+    {
+        "type": "sphere",
+        "center": {
+            "x": 0,
+            "y": 0,
+            "z": -10
+        },
+        "radius": 3
+    },
+    {
+        "type": "sphere",
+        "center": {
+            "x": 5,
+            "y": 3,
+            "z": -20
+        },
+        "radius": 3
+    }
+]
