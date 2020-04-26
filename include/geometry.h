@@ -112,6 +112,11 @@ bool Sphere<T>::intersects(const Ray<T> &ray, Vector3D<T> &intersectionPoint) {
         if (sol1 > sol2) {
             if (sol2 > 0)
                 std::swap(sol1, sol2);
+            if (sol1 < 0) {
+                std::cout << "Both intersections are behind the origin"
+                          << "\n";
+                return false;
+            }
         } else {
             if (sol2 > 0)
                 std::swap(sol1, sol2);
