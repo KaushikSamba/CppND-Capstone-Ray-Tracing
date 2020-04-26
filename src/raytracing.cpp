@@ -1,5 +1,6 @@
 #include "geometry.h"
 #include "image.h"
+#include "json_reader.h"
 
 #include <iostream>
 #include <memory>
@@ -74,14 +75,25 @@ void render_image(const std::shared_ptr<ImageOptions> options,
     saver.save(image);
 }
 
+std::shared_ptr<ImageOptions> getImageConfigs(std::string filename) {
+    JSONReader reader(filename);
+    nlohmann::json j = reader.getJSON();
+    std::shared_ptr<ImageOptions> options = std::make_shared<ImageOptions>(
+        j["dimensions"]["height"], j["dimensions"]["width"], j["angle"],
+        j["filename"]);
+    return options;
+}
+
 int main() {
     std::shared_ptr<ImageOptions> options =
-        std::make_shared<ImageOptions>(201, 201, 90);
+        getImageConfigs("../configs/image_options.json");
+    ;
     // ImageOptions options(201, 201, 90);
     std::vector<std::unique_ptr<Sphere<float>>> spheres;
-    spheres.emplace_back(std::make_unique<Sphere<float>>(5, 3, -10, 3));
+    spheres.emplace_back(std::make_unique<Sphere<float>>(0, 0, -10, 3));
     spheres[0]->print();
     render_image(std::move(options), std::move(spheres));
     std::cout << "Ref count: " << options.use_count() << "\n";
+    // std::cout << "Aspect ratio: " << options->getAspectRatio() << "\n";
     return 0;
 }

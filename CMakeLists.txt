@@ -7,5 +7,9 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 
 project(Raytracing)
 
-include_directories(include)
-add_executable(Raytracing src/raytracing.cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/single_include)
+file(GLOB SOURCES "src/*.cpp")
+
+add_executable(raytracing ${SOURCES})
+# add_executable(settings src/settings.cpp)
