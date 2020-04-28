@@ -70,35 +70,22 @@ void render_image(const std::shared_ptr<ImageOptions> options,
     saver.save(image);
 }
 
-std::shared_ptr<ImageOptions> getImageConfigs(std::string filename) {
+void getJSONData(const std::string &filename,
+                 std::shared_ptr<ImageOptions> &options,
+                 std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
     JSONReader reader(filename);
-    nlohmann::json j = reader.getJSON();
-    std::shared_ptr<ImageOptions> options = std::make_shared<ImageOptions>(j);
-    return options;
-}
-
-std::vector<std::unique_ptr<Sphere<float>>> getObjects(std::string filename) {
-    JSONReader reader(filename);
-    nlohmann::json j = reader.getJSON();
-    std::vector<std::unique_ptr<Sphere<float>>> spheres;
-    int i = 0;
-    for (auto &object_json : j) {
-        if (object_json["type"].get<std::string>() == "sphere") {
-            spheres.emplace_back(std::make_unique<Sphere<float>>(object_json));
-            spheres[i++]->print();
-        }
-    }
-    return std::move(spheres);
+    reader.getJSON();
+    reader.parse(options, spheres);
 }
 
 int main() {
     auto logger = spdlog::basic_logger_mt("raytracing_logger",
                                           "../logs/raytracing_logs.txt");
-    std::shared_ptr<ImageOptions> options =
-        getImageConfigs("../configs/image_options.json");
-    ;
-    std::vector<std::unique_ptr<Sphere<float>>> spheres =
-        getObjects("../configs/objects.json");
+    std::shared_ptr<ImageOptions> options;
+    std::vector<std::unique_ptr<Sphere<float>>> spheres;
+
+    getJSONData("../configs/config.json", options, spheres);
+
     render_image(std::move(options), std::move(spheres));
     return 0;
 }

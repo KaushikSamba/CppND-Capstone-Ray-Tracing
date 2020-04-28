@@ -1,0 +1,54 @@
+{
+    "image_options": {
+        "angle": 90.0,
+        "dimensions": {
+            "width": 501,
+            "height": 501
+        },
+        "save_filename": "out.ppm"
+    },
+    "objects": [
+        {
+            "type": "sphere",
+            "center": {
+                "x": 0,
+                "y": 0,
+                "z": -10
+            },
+            "radius": 3,
+            "color": [
+                1,
+                1,
+                1
+            ]
+        },
+        {
+            "type": "sphere",
+            "center": {
+                "x": 5,
+                "y": 3,
+                "z": -20
+            },
+            "radius": 7,
+            "color": [
+                0,
+                1.0,
+                0.5
+            ]
+        },
+        {
+            "type": "sphere",
+            "center": {
+                "x": 10,
+                "y": 20,
+                "z": -80
+            },
+            "radius": 30,
+            "color": [
+                0.3,
+                0.4,
+                0.7
+            ]
+        }
+    ]
+}

@@ -1,24 +1,31 @@
 #include "json_reader.h"
 #include <iostream>
 
-JSONReader::~JSONReader() { istream.close(); }
+JSONReader::~JSONReader() { _istream.close(); }
 
 JSONReader::JSONReader() {}
-nlohmann::json JSONReader::getJSON() {
-    nlohmann::json j;
-    istream >> j;
-    return j;
-}
+void JSONReader::getJSON() { _istream >> _json; }
 
 void JSONReader::openFile(std::string filename) {
-    istream.open(filename);
-    if (!istream.is_open()) {
+    _istream.open(filename);
+    if (!_istream.is_open()) {
         std::cout << "Could not open file " << filename << "\n";
         exit(1);
     }
 }
 
 JSONReader::JSONReader(std::string filename) { openFile(filename); }
+
+void JSONReader::parse(std::shared_ptr<ImageOptions> &configs,
+                       std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
+    configs = std::make_shared<ImageOptions>(_json["image_options"]);
+    for (auto &object_json : _json["objects"]) {
+        if (object_json["type"].get<std::string>() == "sphere") {
+            spheres.emplace_back(std::make_unique<Sphere<float>>(object_json));
+            spheres.back()->print();
+        }
+    }
+}
 
 // int main() {
 //     auto options = getImageConfigs("../configs/image_options.json");
