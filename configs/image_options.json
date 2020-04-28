@@ -1,8 +1,8 @@
 {
     "angle": 90.0,
     "dimensions": {
-        "width": 201,
-        "height": 201
+        "width": 501,
+        "height": 501
     },
     "save_filename": "out.ppm"
 }

@@ -9,13 +9,17 @@ template <typename T> class Sphere {
   public:
     Sphere(T x, T y, T z, T radius);
     Sphere(Vector3D<T> center, T radius);
-    Sphere(const nlohmann::json &);
-    bool intersects(const Ray<T> &, Vector3D<T> &);
-    void normalAtPoint(Vector3D<T> &, const Vector3D<T> &);
+    Sphere(const nlohmann::json &j);
+    bool intersects(const Ray<T> &ray, Vector3D<T> &intersectionPoint,
+                    T &distance);
+    void normalAtPoint(Vector3D<T> &normal, const Vector3D<T> &point) ;
     void print();
+    Vector3D<T> getSurfaceProperties(const Vector3D<T> &intersection,
+                                     const Ray<T> &ray);
 
   private:
     Vector3D<T> center;
     T radius;
+    Vector3D<float> color;
 };
 #endif

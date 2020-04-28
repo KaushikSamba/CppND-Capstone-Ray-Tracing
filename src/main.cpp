@@ -35,39 +35,38 @@ void render_image(const std::shared_ptr<ImageOptions> options,
 
             Vector3D<float> dir =
                 Vector3D<float>(world_x, world_y, -1) - origin;
-            // dir.print();
             dir.normalize();
 
             Ray<float> ray(origin, dir);
             Vector3D<float> intersection;
-            if (spheres[0]->intersects(ray, intersection)) {
-                // std::cout << "Pixels: (" << x << ", " << y
-                //   << ")\tIntersection at: ";
-                // intersection.print('\t');
-                // Assigning each pixel a color value based on the facing ratio.
-                Vector3D<float> normal;
-                spheres[0]->normalAtPoint(normal, intersection);
-                // std::cout << "Normal: ";
-                // normal.print('\t');
-
-                float facingRatio =
-                    std::max(normal.dot(ray.direction * -1), 0.0f);
-                // std::cout << "Facing ratio = " << facingRatio << "\t";
-                image[y * options->height + x] = {0, 0, facingRatio};
-                // image[y * options.height + x].print('\n');
+            float distance;
+            float minDistance = INFINITY;
+            Vector3D<float> minIntersection;
+            size_t which_sphere;
+            for (size_t i = 0; i < spheres.size(); i++) {
+                if (spheres[i]->intersects(ray, intersection, distance)) {
+                    // std::cout << "Pixel: (" << x << ", " << y << ")\t";
+                    // std::cout << "Intersected sphere " << i
+                    //   << " Dist = " << distance << " ";
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        minIntersection = intersection;
+                        which_sphere = i; // Index of this sphere
+                    }
+                }
             }
 
-            // Assigning each pixel a color value based on the direction vector
-            // dir.absolute();
-            // image[y][x] = dir;
-            // dir.print();
-            // image[y][x].print();
+            // If minDistance is infinity, no sphere intersected with this ray
+            if (!std::isinf(minDistance)) {
+                // Get surface info of the nearest sphere.
+                image[y * options->height + x] =
+                    spheres[which_sphere]->getSurfaceProperties(minIntersection,
+                                                                ray);
+            }
         }
     }
     std::cout << "Saving PPM image to file.\n";
-    // Saving the PPM image
     ImageSaver saver(options);
-    // std::cout << "Ref count: " << options.use_count() << "\n";
     saver.save(image);
 }
 

@@ -13,11 +13,23 @@ template <typename T>
 Sphere<T>::Sphere(const nlohmann::json &j)
     : center(j["center"]["x"].get<T>(), j["center"]["y"].get<T>(),
              j["center"]["z"].get<T>()),
-      radius(j["radius"].get<T>()) {}
+      radius(j["radius"].get<T>()),
+      color(static_cast<std::vector<float>>(j["color"])) {}
 
 template <typename T> void Sphere<T>::print() {
-    std::cout << "Instantiated a sphere of radius " << radius << " at center ";
+    std::cout << "Instantiated a sphere with color ";
+    color.print(' ');
+    std::cout << "and radius " << radius << " at center ";
     center.print();
+}
+
+template <typename T>
+Vector3D<T> Sphere<T>::getSurfaceProperties(const Vector3D<T> &intersection,
+                                            const Ray<T> &ray) {
+    Vector3D<float> normal;
+    this->normalAtPoint(normal, intersection);
+    float facingRatio = std::max(normal.dot(ray.direction * -1), 0.0f);
+    return color * facingRatio;
 }
 
 template <typename T>
@@ -28,7 +40,8 @@ void Sphere<T>::normalAtPoint(Vector3D<T> &normal, const Vector3D<T> &point) {
 }
 
 template <typename T>
-bool Sphere<T>::intersects(const Ray<T> &ray, Vector3D<T> &intersectionPoint) {
+bool Sphere<T>::intersects(const Ray<T> &ray, Vector3D<T> &intersectionPoint,
+                           T &distance) {
     // Computes the intersection of the sphere with a ray (has origin vector and
     // direction). Also yields the intersection point.
     T a = 1;
@@ -66,7 +79,10 @@ bool Sphere<T>::intersects(const Ray<T> &ray, Vector3D<T> &intersectionPoint) {
         }
         // Now sol1 is the one we want to work with. Changing this to a point
         // involves using the equation (Origin + t*Direction).
+        // Sol1 is the distance from the origin, which is also something we need
+        // to know to decide which sphere is the closest to the camera.
         intersectionPoint = ray.origin + ray.direction * sol1;
+        distance = sol1;
         return true;
     }
 }

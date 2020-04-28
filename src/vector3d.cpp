@@ -4,9 +4,13 @@
 
 template <typename T> Vector3D<T>::Vector3D() : _x(0), _y(0), _z(0) {}
 template <typename T>
-Vector3D<T>::Vector3D(T val) : _x(val), _y(val), _z(val) {}
+Vector3D<T>::Vector3D(const T &val) : _x(val), _y(val), _z(val) {}
 template <typename T>
-Vector3D<T>::Vector3D(T x, T y, T z) : _x(x), _y(y), _z(z) {}
+Vector3D<T>::Vector3D(const T &x, const T &y, const T &z)
+    : _x(x), _y(y), _z(z) {}
+template <typename T>
+Vector3D<T>::Vector3D(const std::vector<T> &vec)
+    : _x(vec[0]), _y(vec[1]), _z(vec[2]) {}
 
 template <typename T> T Vector3D<T>::length_sq() const {
     return _x * _x + _y * _y + _z * _z;
