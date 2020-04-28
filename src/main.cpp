@@ -2,6 +2,8 @@
 #include "image_saver.h"
 #include "json_reader.h"
 #include "ray.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
 #include "sphere.h"
 #include <iostream>
 #include <memory>
@@ -18,6 +20,7 @@ void get_world_coordinates(float &world_x, float &world_y, const int &x,
 
 void render_image(const std::shared_ptr<ImageOptions> options,
                   const std::vector<std::unique_ptr<Sphere<float>>> &&spheres) {
+    auto logger = spdlog::get("raytracing_logger");
     std::unique_ptr<Vector3D<float>[]> image =
         std::make_unique<Vector3D<float>[]>(options->height * options->width);
 
@@ -29,9 +32,6 @@ void render_image(const std::shared_ptr<ImageOptions> options,
         for (int x = 0; x < options->width; x++) {
             get_world_coordinates(world_x, world_y, x, y, options, aspect_ratio,
                                   fov_scale);
-            // std::cout << "FoV pixels: (" << cam_fov_x << ", " <<
-            // cam_fov_y
-            //           << ")\n";
 
             Vector3D<float> dir =
                 Vector3D<float>(world_x, world_y, -1) - origin;
@@ -45,9 +45,9 @@ void render_image(const std::shared_ptr<ImageOptions> options,
             size_t which_sphere;
             for (size_t i = 0; i < spheres.size(); i++) {
                 if (spheres[i]->intersects(ray, intersection, distance)) {
-                    // std::cout << "Pixel: (" << x << ", " << y << ")\t";
-                    // std::cout << "Intersected sphere " << i
-                    //   << " Dist = " << distance << " ";
+                    logger->info("Pixel: ({}, {})", x, y);
+                    logger->info("Intersected sphere {} at distance {}", i,
+                                 distance);
                     if (distance < minDistance) {
                         minDistance = distance;
                         minIntersection = intersection;
@@ -92,12 +92,13 @@ std::vector<std::unique_ptr<Sphere<float>>> getObjects(std::string filename) {
 }
 
 int main() {
+    auto logger = spdlog::basic_logger_mt("raytracing_logger",
+                                          "../logs/raytracing_logs.txt");
     std::shared_ptr<ImageOptions> options =
         getImageConfigs("../configs/image_options.json");
     ;
     std::vector<std::unique_ptr<Sphere<float>>> spheres =
         getObjects("../configs/objects.json");
     render_image(std::move(options), std::move(spheres));
-    // std::cout << "Ref count: " << options.use_count() << "\n";
     return 0;
 }

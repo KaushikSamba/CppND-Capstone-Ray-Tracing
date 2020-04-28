@@ -8,8 +8,11 @@ set(CMAKE_CXX_FLAGS, "${CXX_FLAGS}")
 project(Raytracing)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/single_include)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/external)
 file(GLOB SOURCES "src/*.cpp")
+
+# find_package(spdlog)
 
 add_executable(raytracing ${SOURCES})
 # add_executable(settings src/settings.cpp)
+# target_link_libraries(raytracing PRIVATE spdlog::spdlog)
