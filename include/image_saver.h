@@ -13,6 +13,10 @@ class ImageSaver {
     void save(const std::unique_ptr<Vector3D<float>[]> &);
 
   private:
+    void findExtension();
+    void save_png(const std::unique_ptr<Vector3D<float>[]> &image);
+    void save_ppm(const std::unique_ptr<Vector3D<float>[]> &image);
+    enum Extensions { ppm, png } _ext;
     std::ofstream _outstream;
     std::shared_ptr<ImageOptions> _options;
 };

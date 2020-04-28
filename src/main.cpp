@@ -65,7 +65,7 @@ void render_image(const std::shared_ptr<ImageOptions> options,
             }
         }
     }
-    std::cout << "Saving PPM image to file.\n";
+    std::cout << "Saving image to file.\n";
     ImageSaver saver(options);
     saver.save(image);
 }
