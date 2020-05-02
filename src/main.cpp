@@ -63,6 +63,9 @@ void render_image(const std::shared_ptr<ImageOptions> options,
                     spheres[which_sphere]->getSurfaceProperties(minIntersection,
                                                                 ray);
             }
+            else {
+                image[y * options->height + x] = options->backgroundColor;
+            }
         }
     }
     std::cout << "Saving image to file.\n";
@@ -81,6 +84,7 @@ void getJSONData(const std::string &filename,
 int main() {
     auto logger = spdlog::basic_logger_mt("raytracing_logger",
                                           "../logs/raytracing_logs.txt");
+    logger->set_level(spdlog::level::warn);
     std::shared_ptr<ImageOptions> options;
     std::vector<std::unique_ptr<Sphere<float>>> spheres;
 

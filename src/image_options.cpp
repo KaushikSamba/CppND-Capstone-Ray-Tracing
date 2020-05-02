@@ -13,7 +13,8 @@ ImageOptions::ImageOptions(const nlohmann::json &j)
     : height(j["dimensions"]["height"].get<int>()),
       width(j["dimensions"]["width"].get<int>()),
       alpha(j["angle"].get<float>()),
-      filename(j["save_filename"].get<std::string>()) {}
+      filename(j["save_filename"].get<std::string>()), 
+      backgroundColor(static_cast<std::vector<float>>(j["background_color"])) {}
 
 float ImageOptions::getAspectRatio() const { return width / (float)height; }
 

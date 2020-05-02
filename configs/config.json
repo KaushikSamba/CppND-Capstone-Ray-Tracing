@@ -5,6 +5,11 @@
             "width": 501,
             "height": 501
         },
+        "background_color": [
+            0.3,
+            0.7,
+            0.4
+        ],
         "save_filename": "../results/out.png"
     },
     "objects": [

@@ -2,6 +2,7 @@
 #define IMAGE_OPTIONS_H
 
 #include "nlohmann/json.hpp"
+#include "vector3d.h"
 #include <string>
 
 struct ImageOptions {
@@ -14,6 +15,7 @@ struct ImageOptions {
     const int height, width;
     const float alpha;
     const std::string filename;
+    const Vector3D<float> backgroundColor;
 };
 
 #endif
