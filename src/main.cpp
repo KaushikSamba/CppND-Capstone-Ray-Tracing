@@ -1,10 +1,13 @@
+#include "argparse.h"
+#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/spdlog.h"
+
 #include "image_options.h"
 #include "image_saver.h"
 #include "json_reader.h"
 #include "ray.h"
-#include "spdlog/sinks/basic_file_sink.h"
-#include "spdlog/spdlog.h"
 #include "sphere.h"
+
 #include <iostream>
 #include <memory>
 #include <random>
@@ -73,41 +76,60 @@ void render_image(const std::shared_ptr<ImageOptions> options,
     saver.save(image);
 }
 
-void getJSONData(const std::string &filename,
-                 std::shared_ptr<ImageOptions> &options,
-                 std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
-    JSONReader reader(filename);
-    reader.getJSON();
-    reader.parse_options(options);
-    // reader.parse_objects(spheres);
-}
+int main(int argc, const char *argv[]) {
+    // Parse command line arguments
+    argparse::ArgumentParser parser("Ray Tracing application");
+    parser.add_argument()
+        .names({"-d", "--debug"})
+        .description("Enable debug mode");
+    parser.add_argument()
+        .names({"-r", "--random"})
+        .description("Use random spheres");
+    parser.enable_help();
+    auto parse_error = parser.parse(argc, argv);
 
-int main() {
+    if (parse_error) {
+        std::cout << parse_error << "\n";
+        return -1;
+    }
+
     auto logger = spdlog::basic_logger_mt("raytracing_logger",
                                           "../logs/raytracing_logs.txt");
-    logger->set_level(spdlog::level::warn);
+
+    if (parser.exists("d"))
+        logger->set_level(spdlog::level::debug);
+    else
+        logger->set_level(spdlog::level::warn);
+
     std::shared_ptr<ImageOptions> options;
     std::vector<std::unique_ptr<Sphere<float>>> spheres;
 
-    getJSONData("../configs/config.json", options, spheres);
+    JSONReader reader("../configs/config.json");
+    reader.getJSON();
+    reader.parse_options(options);
 
-    // Generate random spheres
-    size_t numSpheres = 32;
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(0, 1);
+    if (parser.exists("r")) {
+        // Generate random spheres
+        size_t numSpheres = 32;
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<> dis(0, 1);
 
-    gen.seed(10);
-    for (size_t i = 0; i < numSpheres; ++i) {
-        Vector3D<float> center((0.5 - dis(gen)) * 10, (0.5 - dis(gen)) * 10,
-                               -1 * (1 + dis(gen) * 10));
-        float radius = (0.5 + dis(gen) * 2);
-        Vector3D<float> color(dis(gen), dis(gen), dis(gen));
-        spheres.emplace_back(
-            std::make_unique<Sphere<float>>(center, radius, color));
-        spheres.back()->log();
+        gen.seed(10);
+        for (size_t i = 0; i < numSpheres; ++i) {
+            Vector3D<float> center((0.5 - dis(gen)) * 10, (0.5 - dis(gen)) * 10,
+                                   -1 * (1 + dis(gen) * 10));
+            float radius = (0.5 + dis(gen) * 2);
+            Vector3D<float> color(dis(gen), dis(gen), dis(gen));
+            spheres.emplace_back(
+                std::make_unique<Sphere<float>>(center, radius, color));
+            spheres.back()->log();
+        }
+    } else {
+        reader.parse_objects(spheres);
     }
 
     render_image(std::move(options), std::move(spheres));
+
     return 0;
 }

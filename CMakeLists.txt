@@ -16,6 +16,7 @@ file(GLOB SOURCES "src/*.cpp")
 add_executable(raytracing ${SOURCES})
 # add_executable(settings src/settings.cpp)
 # target_link_libraries(raytracing PRIVATE spdlog::spdlog)
+target_link_libraries(raytracing stdc++fs)
 
 find_package(PNG REQUIRED)
 include_directories(${PNG_INCLUDE_DIR})
