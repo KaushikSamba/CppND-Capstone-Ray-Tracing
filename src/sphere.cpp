@@ -1,4 +1,5 @@
 #include "sphere.h"
+#include "spdlog/spdlog.h"
 #include <cmath>
 #include <iostream>
 
@@ -6,8 +7,8 @@ template <typename T>
 Sphere<T>::Sphere(T x, T y, T z, T radius) : center(x, y, z), radius(radius) {}
 
 template <typename T>
-Sphere<T>::Sphere(Vector3D<T> center, T radius)
-    : center(center), radius(radius) {}
+Sphere<T>::Sphere(Vector3D<T> center, T radius, Vector3D<float> color)
+    : center(center), radius(radius), color(color) {}
 
 template <typename T>
 Sphere<T>::Sphere(const nlohmann::json &j)
@@ -21,6 +22,14 @@ template <typename T> void Sphere<T>::print() {
     color.print(' ');
     std::cout << "and radius " << radius << " at center ";
     center.print();
+}
+
+template <typename T> void Sphere<T>::log() {
+    auto logger = spdlog::get("raytracing_logger");
+    logger->info("Instantiated a sphere with color ({}, {}, {}) and radius {} "
+                 "at center ({}, {}, {})",
+                 color.X(), color.Y(), color.Z(), radius, center.X(),
+                 center.Y(), center.Z());
 }
 
 template <typename T>

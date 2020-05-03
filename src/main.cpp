@@ -7,6 +7,7 @@
 #include "sphere.h"
 #include <iostream>
 #include <memory>
+#include <random>
 #include <vector>
 
 void get_world_coordinates(float &world_x, float &world_y, const int &x,
@@ -78,7 +79,7 @@ void getJSONData(const std::string &filename,
     JSONReader reader(filename);
     reader.getJSON();
     reader.parse_options(options);
-    reader.parse_objects(spheres);
+    // reader.parse_objects(spheres);
 }
 
 int main() {
@@ -89,6 +90,23 @@ int main() {
     std::vector<std::unique_ptr<Sphere<float>>> spheres;
 
     getJSONData("../configs/config.json", options, spheres);
+
+    // Generate random spheres
+    size_t numSpheres = 32;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dis(0, 1);
+
+    gen.seed(10);
+    for (size_t i = 0; i < numSpheres; ++i) {
+        Vector3D<float> center((0.5 - dis(gen)) * 10, (0.5 - dis(gen)) * 10,
+                               -1 * (1 + dis(gen) * 10));
+        float radius = (0.5 + dis(gen) * 2);
+        Vector3D<float> color(dis(gen), dis(gen), dis(gen));
+        spheres.emplace_back(
+            std::make_unique<Sphere<float>>(center, radius, color));
+        spheres.back()->log();
+    }
 
     render_image(std::move(options), std::move(spheres));
     return 0;

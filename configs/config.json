@@ -2,8 +2,8 @@
     "image_options": {
         "angle": 90.0,
         "dimensions": {
-            "width": 501,
-            "height": 501
+            "width": 640,
+            "height": 480
         },
         "background_color": [
             0.3,
