@@ -16,9 +16,12 @@ void JSONReader::openFile(std::string filename) {
 
 JSONReader::JSONReader(std::string filename) { openFile(filename); }
 
-void JSONReader::parse(std::shared_ptr<ImageOptions> &configs,
-                       std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
+void JSONReader::parse_options(std::shared_ptr<ImageOptions> &configs) {
     configs = std::make_shared<ImageOptions>(_json["image_options"]);
+}
+
+void JSONReader::parse_objects(
+    std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
     for (auto &object_json : _json["objects"]) {
         if (object_json["type"].get<std::string>() == "sphere") {
             spheres.emplace_back(std::make_unique<Sphere<float>>(object_json));
@@ -26,9 +29,3 @@ void JSONReader::parse(std::shared_ptr<ImageOptions> &configs,
         }
     }
 }
-
-// int main() {
-//     auto options = getImageConfigs("../configs/image_options.json");
-//     std::cout << "Aspect ratio: " << options->getAspectRatio() << "\n";
-//     return 0;
-// }

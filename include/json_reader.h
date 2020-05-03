@@ -14,8 +14,8 @@ class JSONReader {
     ~JSONReader();
 
     void getJSON();
-    void parse(std::shared_ptr<ImageOptions> &configs,
-               std::vector<std::unique_ptr<Sphere<float>>> &spheres);
+    void parse_options(std::shared_ptr<ImageOptions> &configs);
+    void parse_objects(std::vector<std::unique_ptr<Sphere<float>>> &spheres);
 
   private:
     void openFile(std::string filename);
