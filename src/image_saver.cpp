@@ -39,13 +39,13 @@ void ImageSaver::save_png(const std::unique_ptr<Vector3D<float>[]> &image) {
         for (size_t x = 0; x < _options->width; x++) {
             char r =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].X()));
+                       std::min(1.0f, image[y * _options->width + x].X()));
             char g =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].Y()));
+                       std::min(1.0f, image[y * _options->width + x].Y()));
             char b =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].Z()));
+                       std::min(1.0f, image[y * _options->width + x].Z()));
             png_image.set_pixel(x, y, png::rgb_pixel(r, g, b));
         }
     }
@@ -59,13 +59,13 @@ void ImageSaver::save_ppm(const std::unique_ptr<Vector3D<float>[]> &image) {
         for (size_t x = 0; x < _options->width; x++) {
             char r =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].X()));
+                       std::min(1.0f, image[y * _options->width + x].X()));
             char g =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].Y()));
+                       std::min(1.0f, image[y * _options->width + x].Y()));
             char b =
                 (char)(255 *
-                       std::min(1.0f, image[y * _options->height + x].Z()));
+                       std::min(1.0f, image[y * _options->width + x].Z()));
             _outstream << r << g << b;
         }
     }

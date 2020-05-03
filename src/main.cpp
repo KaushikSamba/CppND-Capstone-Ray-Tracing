@@ -14,8 +14,8 @@ void get_world_coordinates(float &world_x, float &world_y, const int &x,
                            const std::shared_ptr<ImageOptions> &options,
                            const float &aspect_ratio, const float &fov_scale) {
     world_x =
-        (aspect_ratio * (2 * ((x + 0.5) / options->width) - 1)) * fov_scale;
-    world_y = (1 - 2 * ((y + 0.5) / options->height)) * fov_scale;
+        (2 * (x + 0.5) / (float)options->width - 1) * aspect_ratio * fov_scale;
+    world_y = (1 - 2 * (y + 0.5) / (float)options->height) * fov_scale;
 }
 
 void render_image(const std::shared_ptr<ImageOptions> options,
@@ -45,9 +45,9 @@ void render_image(const std::shared_ptr<ImageOptions> options,
             size_t which_sphere;
             for (size_t i = 0; i < spheres.size(); i++) {
                 if (spheres[i]->intersects(ray, intersection, distance)) {
-                    logger->info("Pixel: ({}, {})", x, y);
-                    logger->info("Intersected sphere {} at distance {}", i,
-                                 distance);
+                    logger->debug("Pixel: ({}, {})", x, y);
+                    logger->debug("Intersected sphere {} at distance {}", i,
+                                  distance);
                     if (distance < minDistance) {
                         minDistance = distance;
                         minIntersection = intersection;
@@ -59,12 +59,11 @@ void render_image(const std::shared_ptr<ImageOptions> options,
             // If minDistance is infinity, no sphere intersected with this ray
             if (!std::isinf(minDistance)) {
                 // Get surface info of the nearest sphere.
-                image[y * options->height + x] =
+                image[y * options->width + x] =
                     spheres[which_sphere]->getSurfaceProperties(minIntersection,
                                                                 ray);
-            }
-            else {
-                image[y * options->height + x] = options->backgroundColor;
+            } else {
+                image[y * options->width + x] = options->backgroundColor;
             }
         }
     }
@@ -78,7 +77,8 @@ void getJSONData(const std::string &filename,
                  std::vector<std::unique_ptr<Sphere<float>>> &spheres) {
     JSONReader reader(filename);
     reader.getJSON();
-    reader.parse(options, spheres);
+    reader.parse_options(options);
+    reader.parse_objects(spheres);
 }
 
 int main() {
