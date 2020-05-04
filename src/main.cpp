@@ -92,7 +92,11 @@ int main(int argc, const char *argv[]) {
         std::cout << parse_error << "\n";
         return -1;
     }
-
+    
+    if (parser.exists("help")) {
+        parser.print_help();
+        return 0;
+    }
     auto logger = spdlog::basic_logger_mt("raytracing_logger",
                                           "../logs/raytracing_logs.txt");
 
