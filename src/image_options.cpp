@@ -12,7 +12,7 @@ ImageOptions::ImageOptions(int height, int width, float degrees,
 ImageOptions::ImageOptions(const nlohmann::json &j)
     : height(j["dimensions"]["height"].get<int>()),
       width(j["dimensions"]["width"].get<int>()),
-      alpha(j["angle"].get<float>()),
+      alpha(j["angle"].get<float>() * M_PI / 180),
       filename(j["save_filename"].get<std::string>()), 
       backgroundColor(static_cast<std::vector<float>>(j["background_color"])) {}
 
