@@ -5,7 +5,7 @@ This is my Capstone project for the C++ Nanodegree program by Udacity.
 ## Description 
 Ray tracing is a method used in 3D graphics rendering to realistically project three-dimensional objects into a two-dimensional image. In this application, the user can specify the positions and sizes of objects in the real world, which will then be rendered as an image. 
 
-This basic implementation renders spheres, but is flexible enough to handle more complicated object shapes as well. 
+This basic implementation renders spheres, but is flexible enough to handle more complicated object shapes as well. A good reference for the overall concept is [Scratchapixel 2.0](scratchapixel.com). 
 
 ## Code Structure 
 
@@ -36,8 +36,8 @@ This project is divided into the following sub-directories:
 │   ├── sphere.cpp
 │   ├── vector3d.cpp
 ├── CMakeLists.txt
-├── .clang-format
 ├── README.md
+├── .clang-format
 └── .gitignore
 ```
 
@@ -58,6 +58,18 @@ After iterating over all the pixels, the image will be fully formed and ready to
 - gcc/g++ >= 5.4
 
 This has only been tested on Linux, but comparable versions on other operating systems should work just as well. 
+
+## External libraries 
+
+This source code uses the following libraries. These are header-only libraries, so no additional dependencies are required. 
+- [JSON for Modern C++](https://github.com/nlohmann/json)
+    - This was used to parse the configuration JSON file and create objects using the configuration data. ([JSONReader](src/json_reader.cpp))
+- [png++](https://www.nongnu.org/pngpp/doc/0.2.9/)
+    - This library was used to write the image data to a .png file. ([ImageSaver](src/image_saver.cpp))
+- [spdlog](https://github.com/gabime/spdlog/)
+    - This is a fast logging library. I used this to avoid printing debug information to the console. 
+- [argparse](https://github.com/jamolnng/argparse)
+    - Library to parse command line arguments. ([main.cpp](src/main.cpp))
 
 ## Running instructions 
 
@@ -83,6 +95,19 @@ Options:
     -h, --help             Shows this page 
 ```
 
+## Sample outputs
+
+Here are some examples of the renderings this program generates: 
+
+Object positions specified manually in [config file](configs/config.json):
+![alt text][demo_output]
+
+[demo_output]: results/out_demo.png "Manually specified object positions"
+
+Objects generated at random: 
+![alt text][random_output]
+
+[random_output]: results/out_random.png "Random spheres"
 ## Rubric Requirements
 
 ### Loops, Functions, I/O

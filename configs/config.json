@@ -1,14 +1,14 @@
 {
     "image_options": {
-        "angle": 90.0,
+        "angle": 100.0,
         "dimensions": {
             "width": 640,
             "height": 480
         },
         "background_color": [
-            0.3,
-            0.7,
-            0.4
+            0,
+            0,
+            0
         ],
         "save_filename": "../results/out.png"
     },
@@ -44,15 +44,29 @@
         {
             "type": "sphere",
             "center": {
-                "x": 10,
-                "y": 20,
-                "z": -80
+                "x": -35,
+                "y": -15,
+                "z": -70
             },
             "radius": 30,
             "color": [
                 0.3,
                 0.4,
                 0.7
+            ]
+        }, 
+        {
+            "type": "sphere",
+            "center": {
+                "x": 5,
+                "y": -3,
+                "z": -11
+            },
+            "radius": 3,
+            "color": [
+                0.8,
+                0.2,
+                0.1
             ]
         }
     ]
