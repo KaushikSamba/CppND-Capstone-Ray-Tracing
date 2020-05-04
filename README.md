@@ -100,11 +100,13 @@ Options:
 Here are some examples of the renderings this program generates: 
 
 Object positions specified manually in [config file](configs/config.json):
+
 ![alt text][demo_output]
 
 [demo_output]: results/out_demo.png "Manually specified object positions"
 
 Objects generated at random: 
+
 ![alt text][random_output]
 
 [random_output]: results/out_random.png "Random spheres"
