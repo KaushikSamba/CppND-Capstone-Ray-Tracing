@@ -17,6 +17,8 @@ void get_world_coordinates(float &world_x, float &world_y, const int &x,
                            const int &y,
                            const std::shared_ptr<ImageOptions> &options,
                            const float &aspect_ratio, const float &fov_scale) {
+    // Maps pixel coordinates between (0, 0) and (height, width) into real-world
+    // coordinates based on the aspect ratio and field of view.
     world_x =
         (2 * (x + 0.5) / (float)options->width - 1) * aspect_ratio * fov_scale;
     world_y = (1 - 2 * (y + 0.5) / (float)options->height) * fov_scale;
@@ -24,7 +26,10 @@ void get_world_coordinates(float &world_x, float &world_y, const int &x,
 
 void render_image(const std::shared_ptr<ImageOptions> options,
                   const std::vector<std::unique_ptr<Sphere<float>>> &&spheres) {
-    auto logger = spdlog::get("raytracing_logger");
+    // Iterates over each pixel in the image and determines the color at that
+    // pixel. Then saves the produced image.
+
+    auto logger = spdlog::get("log");
     std::unique_ptr<Vector3D<float>[]> image =
         std::make_unique<Vector3D<float>[]>(options->height * options->width);
 
@@ -84,7 +89,8 @@ int main(int argc, const char *argv[]) {
         .description("Enable debug mode");
     parser.add_argument()
         .names({"-r", "--random"})
-        .description("Use random spheres");
+        .description(
+            "Use random spheres (specify number of spheres to render)");
     parser.enable_help();
     auto parse_error = parser.parse(argc, argv);
 
@@ -92,18 +98,17 @@ int main(int argc, const char *argv[]) {
         std::cout << parse_error << "\n";
         return -1;
     }
-    
+
     if (parser.exists("help")) {
         parser.print_help();
         return 0;
     }
-    auto logger = spdlog::basic_logger_mt("raytracing_logger",
-                                          "../logs/raytracing_logs.txt");
+    auto logger = spdlog::basic_logger_mt("log", "../logs/raytracing_logs.txt");
 
     if (parser.exists("d"))
         logger->set_level(spdlog::level::debug);
     else
-        logger->set_level(spdlog::level::warn);
+        logger->set_level(spdlog::level::info);
 
     std::shared_ptr<ImageOptions> options;
     std::vector<std::unique_ptr<Sphere<float>>> spheres;
@@ -114,12 +119,13 @@ int main(int argc, const char *argv[]) {
 
     if (parser.exists("r")) {
         // Generate random spheres
-        size_t numSpheres = 32;
+        auto numSpheres = parser.get<size_t>("r");
+        logger->info("Number of spheres: {}", numSpheres);
+
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_real_distribution<> dis(0, 1);
 
-        gen.seed(10);
         for (size_t i = 0; i < numSpheres; ++i) {
             Vector3D<float> center((0.5 - dis(gen)) * 10, (0.5 - dis(gen)) * 10,
                                    -1 * (1 + dis(gen) * 10));

@@ -25,7 +25,7 @@ template <typename T> void Sphere<T>::print() {
 }
 
 template <typename T> void Sphere<T>::log() {
-    auto logger = spdlog::get("raytracing_logger");
+    auto logger = spdlog::get("log");
     logger->info("Instantiated a sphere with color ({}, {}, {}) and radius {} "
                  "at center ({}, {}, {})",
                  color.X(), color.Y(), color.Z(), radius, center.X(),
